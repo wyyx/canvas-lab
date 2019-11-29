@@ -9,9 +9,21 @@
     <script src="./node_modules/systemjs/dist/system.min.js"></script>
     <script src="./node_modules/systemjs/dist/extras/named-register.js"></script>
   </head>
+
+  <style>
+    canvas {
+      border: 1px solid grey;
+    }
+  </style>
   <body>
+    <div style="position: absolute; top: 50px; left: 50px;">
+      <canvas id="canvas" width="500" height="500">
+        Your browser does not support HTML5 Canvas.
+      </canvas>
+    </div>
+
     <script>
-      System.import("./bundle.js").then(() => System.import("main"));
+      System.import('./bundle.js').then(() => System.import('main'))
     </script>
   </body>
 </html>
