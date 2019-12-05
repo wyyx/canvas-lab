@@ -8,6 +8,12 @@
 
     <script src="./node_modules/systemjs/dist/system.min.js"></script>
     <script src="./node_modules/systemjs/dist/extras/named-register.js"></script>
+
+    <style>
+      .tool-bar {
+        display: flex;
+      }
+    </style>
   </head>
 
   <style>
@@ -16,15 +22,15 @@
     }
   </style>
   <body>
-    <canvas
-      id="canvas"
-      width="256"
-      height="256"
-      style="position: absolute;
-    top: 50px; left: 50px;"
-    >
-      Your browser does not support HTML5 Canvas.
+    <canvas id="canvas" width="500" height="500">
+      Your browser does not support the HTML 5 Canvas.
     </canvas>
+
+    <div class="tool-bar">
+      <button id="leftRotateBtn">左转90度</button>
+      <div >&#160</div>
+      <button id="rightRotateBtn">右转90度</button>
+    </div>
 
     <script>
       System.import('./bundle.js').then(() => System.import('main'))

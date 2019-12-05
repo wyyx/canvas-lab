@@ -7,65 +7,69 @@ function eventWindowLoaded() {
 }
 
 function canvasApp() {
-  var theCanvas = document.getElementById('canvas') as HTMLCanvasElement
-  var context = theCanvas.getContext('2d')
+  const theCanvas = document.getElementById('canvas') as HTMLCanvasElement
+  const context = theCanvas.getContext('2d')
+  let currentRotation = 0
 
-  var mouseX
-  var mouseY
-  var tileSheet = new Image()
-  tileSheet.addEventListener('load', eventSheetLoaded, false)
-  tileSheet.src = '../images/tanks_sheet.png'
-  var imageData = context.createImageData(32, 32)
-
-  function eventSheetLoaded() {
-    startUp()
+  const image = new Image()
+  image.src = '../images/demo.png'
+  image.onload = () => {
+    drawScreen()
   }
 
-  function startUp() {
-    context.fillStyle = '#aaaaaa'
-    context.fillRect(0, 0, 256, 256)
-    drawTileSheet()
+  const leftRotateBtn = document.getElementById('leftRotateBtn')
+  const rightRotateBtn = document.getElementById('rightRotateBtn')
+
+  leftRotateBtn.onclick = function() {
+    currentRotation -= 90
+    console.log(
+      'TCL: leftRotateBtn.onclick -> currentRotation',
+      currentRotation
+    )
+    syncCanvasSizeWithImage(image, currentRotation, theCanvas)
+
+    context.setTransform(1, 0, 0, 1, 0, 0)
+    context.translate(theCanvas.width / 2, theCanvas.height / 2)
+    context.rotate((currentRotation * Math.PI) / 180)
+
+    drawScreen()
   }
 
-  function drawTileSheet() {
-    context.drawImage(tileSheet, 0, 0)
+  rightRotateBtn.onclick = function() {
+    currentRotation += 90
+    console.log(
+      'TCL: rightRotateBtn.onclick -> currentRotation',
+      currentRotation
+    )
+
+    syncCanvasSizeWithImage(image, currentRotation, theCanvas)
+
+    context.setTransform(1, 0, 0, 1, 0, 0)
+    context.translate(theCanvas.width / 2, theCanvas.height / 2)
+    context.rotate((currentRotation * Math.PI) / 180)
+
+    drawScreen()
   }
 
-  function highlightTile(tileId, x, y) {
-    context.fillStyle = '#aaaaaa'
-    context.fillRect(0, 0, 256, 128)
-    drawTileSheet()
-    imageData = context.getImageData(x, y, 32, 32)
-    //loop through imageData.data. Set every 4th value to a new value
-    for (let j = 3; j < imageData.data.length; j += 4) {
-      imageData.data[j] = 128
-    }
-    var startX = Math.floor(tileId % 8) * 32
-    var startY = Math.floor(tileId / 8) * 32
-    context.strokeStyle = 'red'
-    context.strokeRect(startX, startY, 32, 32)
+  function drawScreen() {
+    // syncCanvasSizeWithImage(image, 0, theCanvas)
+    context.drawImage(image, 0, 0)
   }
 
-  function onMouseMove(e) {
-    mouseX = e.clientX - theCanvas.offsetLeft
-    mouseY = e.clientY - theCanvas.offsetTop
-  }
-
-  function onMouseClick(e) {
-    console.log('click: ' + mouseX + ',' + mouseY)
-    if (mouseY < 128) {
-      //find tile to highlight
-      var col = Math.floor(mouseX / 32)
-      var row = Math.floor(mouseY / 32)
-      var tileId = row * 7 + (col + row)
-      highlightTile(tileId, col * 32, row * 32)
+  function syncCanvasSizeWithImage(
+    image: HTMLImageElement,
+    rotate: number,
+    canvas: HTMLCanvasElement
+  ) {
+    if (rotate === 0) {
+      canvas.width = image.width
+      canvas.height = image.height
+    } else if (rotate % 90 === 0) {
+      canvas.width = image.height
+      canvas.height = image.width
     } else {
-      var col = Math.floor(mouseX / 32)
-      var row = Math.floor(mouseY / 32)
-      context.putImageData(imageData, col * 32, row * 32)
+      canvas.width = image.width
+      canvas.height = image.height
     }
   }
-
-  theCanvas.addEventListener('mousemove', onMouseMove, false)
-  theCanvas.addEventListener('click', onMouseClick, false)
 }
