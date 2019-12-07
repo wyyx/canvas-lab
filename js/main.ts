@@ -10,6 +10,8 @@ function canvasApp() {
   const theCanvas = document.getElementById('canvas') as HTMLCanvasElement
   const context = theCanvas.getContext('2d')
   let currentRotation = 0
+  let hFlip = 1
+  let vFlip = 1
 
   const image = new Image()
   image.src = '../images/demo.png'
@@ -20,6 +22,8 @@ function canvasApp() {
 
   const leftRotateBtn = document.getElementById('leftRotateBtn')
   const rightRotateBtn = document.getElementById('rightRotateBtn')
+  const hFlipBtn = document.getElementById('hFlipBtn')
+  const vFlipBtn = document.getElementById('vFlipBtn')
 
   leftRotateBtn.onclick = function() {
     currentRotation -= 90
@@ -33,10 +37,21 @@ function canvasApp() {
     drawScreen()
   }
 
+  hFlipBtn.onclick = function() {
+    hFlip = -hFlip
+    drawScreen()
+  }
+
+  vFlipBtn.onclick = function() {
+    vFlip = -vFlip
+    drawScreen()
+  }
+
   function drawScreen() {
     context.setTransform(1, 0, 0, 1, 0, 0)
     context.translate(theCanvas.width / 2, theCanvas.height / 2)
     context.rotate((currentRotation * Math.PI) / 180)
+    context.scale(hFlip, vFlip)
     context.drawImage(image, -image.width / 2, -image.height / 2)
   }
 
