@@ -24,6 +24,7 @@ function canvasApp() {
   const rightRotateBtn = document.getElementById('rightRotateBtn')
   const hFlipBtn = document.getElementById('hFlipBtn')
   const vFlipBtn = document.getElementById('vFlipBtn')
+  const newImage = document.getElementById('newImage') as HTMLImageElement
 
   leftRotateBtn.onclick = function() {
     currentRotation -= 90
@@ -47,12 +48,8 @@ function canvasApp() {
     drawScreen()
   }
 
-  function drawScreen() {
-    context.setTransform(1, 0, 0, 1, 0, 0)
-    context.translate(theCanvas.width / 2, theCanvas.height / 2)
-    context.rotate((currentRotation * Math.PI) / 180)
-    context.scale(hFlip, vFlip)
-    context.drawImage(image, -image.width / 2, -image.height / 2)
+  function updateNewImageUrl() {
+    newImage.src = theCanvas.toDataURL()
   }
 
   function syncCanvasSizeWithImage(
@@ -67,5 +64,14 @@ function canvasApp() {
       canvas.width = image.height
       canvas.height = image.width
     }
+  }
+
+  function drawScreen() {
+    context.setTransform(1, 0, 0, 1, 0, 0)
+    context.translate(theCanvas.width / 2, theCanvas.height / 2)
+    context.rotate((currentRotation * Math.PI) / 180)
+    context.scale(hFlip, vFlip)
+    context.drawImage(image, -image.width / 2, -image.height / 2)
+    updateNewImageUrl()
   }
 }
